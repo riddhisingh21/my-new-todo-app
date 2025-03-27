@@ -24,7 +24,7 @@ const App = () => {
   }
 
   return (
-    <div className="App">
+    <div className={`App ${isDarkMode ? 'dark-mode' : ''}`}>
       <SignedIn>
         <div className="header">
           <h1>Todo App</h1>
