@@ -18,25 +18,29 @@ export const weatherSlice = createSlice({
     builder
       .addCase(fetchWeatherByCoords.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(fetchWeatherByCoords.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.data = action.payload;
+        state.error = null;
       })
       .addCase(fetchWeatherByCoords.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload || { message: action.error.message };
       })
       .addCase(fetchWeatherByCity.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(fetchWeatherByCity.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.data = action.payload;
+        state.error = null;
       })
       .addCase(fetchWeatherByCity.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload || { message: action.error.message };
       });
   },
 });

@@ -38,13 +38,17 @@ const WeatherWidget = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           dispatch(setLocationStatus('granted'));
+          console.log('Getting weather for coordinates:', {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          });
           dispatch(fetchWeatherByCoords({
             lat: position.coords.latitude,
             lon: position.coords.longitude
           }));
         },
         (error) => {
-          console.error('Error getting location:', error);
+          console.error('Geolocation error:', error);
           dispatch(setLocationStatus('denied'));
           // Fall back to default city
           dispatch(fetchWeatherByCity('New York'));
@@ -52,7 +56,6 @@ const WeatherWidget = () => {
       );
     } else {
       dispatch(setLocationStatus('unsupported'));
-      // Fall back to default city
       dispatch(fetchWeatherByCity('New York'));
     }
   };
@@ -75,7 +78,17 @@ const WeatherWidget = () => {
     }
 
     if (weather.status === 'failed') {
-      return <div className="weather-error">Error: {weather.error} ⚠️</div>;
+      return (
+        <div className="weather-error">
+          <p>Error: {weather.error?.message || 'Failed to fetch weather data'} ⚠️</p>
+          {weather.error?.status && (
+            <p className="error-details">Status: {weather.error.status}</p>
+          )}
+          {weather.error?.details && (
+            <p className="error-details">Details: {JSON.stringify(weather.error.details)}</p>
+          )}
+        </div>
+      );
     }
 
     if (weather.status === 'succeeded' && weather.data) {
